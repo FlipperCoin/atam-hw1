@@ -1,8 +1,25 @@
-.global _start
+.global main
 
-.section .text
-_start:
-#your code here
+.section .data
+head: .quad ANode
+src: .quad 5
+dst: .quad 4
+FNode:  .quad -6
+        .quad NULL
+ENode:  .quad 66
+        .quad FNode
+DNode:  .quad 0x45FFFFFFFF
+        .quad ENode
+CNode:  .quad 0
+        .quad DNode
+BNode:  .quad 4
+        .quad CNode
+ANode:  .quad 5
+        .quad BNode
+        .set NULL, 0
+
+.section .text    
+ex5:
     movq (head), %rsi # s = head
     xor %r9, %r9 # b_s = NULL
     
@@ -61,3 +78,36 @@ endif2:
     je end
     movq %rsi, 8(%r10)
 end:
+    ret
+
+old_ex5:
+    movq (head), %rax
+    xor %rsi, %rsi
+old_loop:
+    test %rax, %rax
+    je old_end
+    
+    movq (%rax), %rdx
+    cmpq %rdx, (dst)
+    je old_swap
+    
+    cmpq %rdx, (src)
+    jne old_iter    
+    movq %rax, %rsi
+old_iter:
+    movq 8(%rax), %rax
+    jmp old_loop
+    
+old_swap:
+    test %rsi, %rsi
+    je end
+    movq %rdx, (%rsi) # %rdx still holds (dst)
+    movq (src), %rdx
+    movq %rdx, (%rax) # %rax still holds dst
+old_end:
+    ret
+    
+main:
+    movq %rsp, %rbp #for correct debugging
+    call ex5
+    ret

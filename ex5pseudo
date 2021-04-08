@@ -1,0 +1,45 @@
+
+b_s = NULL
+s = head
+b_d = NULL
+d = NULL
+
+while (s != NULL) {
+    if (s->val == src) 
+        break;
+    
+    b_s = s
+    s = s->next
+}
+if (s == NULL) return;
+
+b_d = s
+d = s->next
+while (d != NULL) {
+    if (d->val == dst)
+        break;
+
+    b_d = d
+    d = d->next
+}
+if (d == NULL) return;
+
+prev_s_next = s->next
+s->next = d->next
+if (b_s == NULL) {
+    head = d
+}
+else {
+    b_s->next = d
+}
+
+if (prev_s_next == d) {
+    d->next = s
+}
+else {
+    d->next = prev_s_next
+}
+
+if (b_d != s) {
+    b_d->next = s
+}
