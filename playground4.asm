@@ -1,8 +1,13 @@
-.global _start
+.global main
 
-.section .text
-_start:
-#your code here
+.section .data
+arr: .int 6,4,1,9,7,6,3
+n: .int 7
+begin: .int 0
+len: .int 0
+
+.section .text    
+ex4:
     xor %r9, %r9 # seq_begin
     xor %r10, %r10 # seq_len
     movl $0, (len)
@@ -43,3 +48,9 @@ continue:
     inc %ecx
     jmp loop    
 end:
+    ret
+      
+main:
+    movq %rsp, %rbp #for correct debugging
+    call ex4
+    ret

@@ -1,0 +1,23 @@
+len = 0;
+begin = 0;
+seq_len = 0;
+seq_begin = 0;
+
+if (n == 1) {
+    len = 1;
+}
+
+for (int i = 0; i < n-1; i++) {
+    if (arr[i] > arr[i+1]) {
+        seq_len++;
+    }
+    else {
+        seq_len = 1
+        seq_begin = i+1;
+    }
+
+    if (seq_len > len) {
+        len = seq_len;
+        begin = seq_begin;
+    }
+}
