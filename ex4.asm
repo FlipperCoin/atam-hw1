@@ -3,43 +3,47 @@
 .section .text
 _start:
 #your code here
-    xor %r9, %r9 # seq_begin
-    xor %r10, %r10 # seq_len
-    movl $0, (len)
-    movl $0, (begin)
+  cmp $0, n #if n==0
+  je end
+
+  movq $arr,%rax #initialize - array pointer
+  movl $1,%ebx #max len
+  movl $1,%ecx #current len
+  movq %rax,%rsi #current begin
+  movl $0, begin
+  movl $0, len
+  
+     
+  loop:
+    cmpl $1, n # while(n>0)
+    jle end
+    movl (%rax), %edx 
+    cmp %edx, 4(%rax) # if(arr[i] < arr[i+1])
+    jge end_of_sires
+    incl %ecx
+    cmpl %ebx, %ecx
+    jg new_max
+  update_counter:
+    addq $4, %rax
+    decl n
+    jmp loop
+  
     
-    xor %rcx, %rcx
+  new_max:
+    movl %ecx, %ebx #update max len
+    movq %rsi, %r8
+    subq $arr, %r8
+    shrq $2, %r8
+    movl %r8d, begin #update begin (max begin)
+    jmp update_counter
     
-    movl (n), %edi
-    test %edi, %edi
-    je end
     
-    movl $1, (len)
-    decl %edi
+  end_of_sires:
+    addq $4, %rax
+    decl n
+    movq %rax, %rsi #update current begin
+    movl $1, %ecx #update current len
+    jmp loop 
     
-loop:
-    cmpl %edi, %ecx
-    jae end
-    
-    movq $arr, %rbx
-    movl (%rbx,%rcx,4), %eax
-    movl 4(%rbx,%rcx,4), %edx
-    cmpl %edx, %eax 
-    ja seq_inc # if (arr[i] > arr[i+1])
-    movq %rcx, %r9 
-    incq %r9 # seq_begin = i+1
-    movq $1, %r10 # seq_len = 1
-    jmp try_swap
-seq_inc:
-    incq %r10
-try_swap:
-    movq %r9, %rax
-    movq %r10, %rdx
-    cmpl (len), %edx
-    jbe continue
-    movl %edx, (len)
-    movl %eax, (begin)
-continue:
-    inc %ecx
-    jmp loop    
-end:
+  end:
+    movl %ebx, len
