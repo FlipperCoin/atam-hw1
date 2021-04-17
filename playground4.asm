@@ -1,56 +1,62 @@
-.global main
+#.global _start
+.global main #need to delete
 
-.section .data
-arr: .int 6,4,1,9,7,6,3
-n: .int 7
+.section .data #need to delete
+arr: .int 1,2,1,3,2,1,1,2,3
+n: .int 9
 begin: .int 0
 len: .int 0
 
-.section .text    
-ex4:
-    xor %r9, %r9 # seq_begin
-    xor %r10, %r10 # seq_len
-    movl $0, (len)
-    movl $0, (begin)
-    
-    xor %rcx, %rcx
-    
-    movl (n), %edi
-    test %edi, %edi
-    je end
-    
-    movl $1, (len)
-    decl %edi
-    
-loop:
-    cmpl %edi, %ecx
-    jae end
-    
-    movq $arr, %rbx
-    movl (%rbx,%rcx,4), %eax
-    movl 4(%rbx,%rcx,4), %edx
-    cmpl %edx, %eax 
-    ja seq_inc # if (arr[i] > arr[i+1])
-    movq %rcx, %r9 
-    incq %r9 # seq_begin = i+1
-    movq $1, %r10 # seq_len = 1
-    jmp try_swap
-seq_inc:
-    incq %r10
-try_swap:
-    movq %r9, %rax
-    movq %r10, %rdx
-    cmpl (len), %edx
-    jbe continue
-    movl %edx, (len)
-    movl %eax, (begin)
-continue:
-    inc %ecx
-    jmp loop    
-end:
-    ret
-      
+.section .text
+#_start:
 main:
-    movq %rsp, %rbp #for correct debugging
-    call ex4
-    ret
+    movq %rsp, %rbp #for correct debugging #need to deleate
+#your code here
+
+  cmp $0, n #if n==0
+  je end
+
+  movq $arr,%rax #initialize - array pointer
+  movl $1,%ebx #max len
+  movl $1,%ecx #current len
+  movq %rax,%rsi #current begin
+  movl $0, begin
+  movl $0, len
+  
+   
+  
+  loop:
+    cmpl $1, n # while(n>0)
+    jle end
+    movl (%rax), %edx 
+    cmp %edx, 4(%rax) # if(arr[i] < arr[i+1])
+    jge end_of_sires
+    incl %ecx
+    cmpl %ebx, %ecx
+    jg new_max
+  update_counter:
+    addq $4, %rax
+    decl n
+    jmp loop
+  
+    
+  new_max:
+    movl %ecx, %ebx #update max len
+    movq %rsi, %r8
+    subq $arr, %r8
+    shrq $2, %r8
+    movl %r8d, begin #update begin (max begin)
+    jmp update_counter
+    
+    
+  end_of_sires:
+    addq $4, %rax
+    decl n
+    movq %rax, %rsi #update current begin
+    movl $1, %ecx #update current len
+    jmp loop 
+    
+  end:
+    movl %ebx, len
+    ret #need to delete
+    
