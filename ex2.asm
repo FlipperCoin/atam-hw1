@@ -3,13 +3,19 @@
 .section .text
 _start:
 #your code here
-    movq $source, %rsi
-    movq $destination, %rdi
-    
-    movl (num), %ecx
-    test %ecx, %ecx
-    jl end
-    
-    rep movsb
-    
-end:
+    xorq %rax,%rax
+    cmpl $0, num #if num<=0 do nothing
+    jle end
+    movq $source, %rbx 
+    movq $destination, %rdx
+  loop:
+       movb (%rbx), %al 
+       movb %al, (%rdx) #moves 1 byte from source to dest
+       
+       incq %rbx #updates the values
+       incq %rdx
+       decl num
+       je end #if num=0 we finished
+       jmp loop #else continue
+           
+  end:
