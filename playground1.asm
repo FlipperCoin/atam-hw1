@@ -1,31 +1,31 @@
-.global main
+#.global _start
+.global main #need to delete
 
-.section .data
-num: .quad 0x202
-countBits:  .zero 4
+.section .data #have to delete this part
+num: .quad 0x0
+countBits: .zero 4
 
-.section .text    
-ex1:
+
+.section .text
+#_start:
+main:
+    movq %rsp, %rbp #for correct debugging #need to deleate
+#your code here
+    movl $0, countBits #intilaze
     movq num, %rax
-    xor %rbx, %rbx
-loop:
+    
+  loop:
     test %rax, %rax
     je end
-    inc %rbx
     
-    mov %rax, %rdx
-    decq %rax
-    andq %rdx, %rax
-    
+    shr %rax
+    jc addOne
     jmp loop
-end:
-    movq %rbx, countBits    
-    ret
-
-main:
-    movq %rsp, %rbp #for correct debugging
-    #call ex2
-    xor %rax, %rax
-    movl $0xFFFFFFFF, %eax
-    addl $1, %eax
-    ret
+  
+  addOne:
+    incl countBits
+    jmp loop
+    
+  end:
+    ret #need to delete
+    
