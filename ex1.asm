@@ -3,17 +3,20 @@
 .section .text
 _start:
 #your code here
+    movl $0, countBits #intilaze
     movq num, %rax
-    xor %rbx, %rbx
-loop:
+    
+  loop:
     test %rax, %rax
     je end
-    inc %rbx
     
-    mov %rax, %rdx
-    decq %rax
-    andq %rdx, %rax
-    
+    shr %rax
+    jc addOne
     jmp loop
-end:
-    movq %rbx, countBits    
+  
+  addOne:
+    incl countBits
+    jmp loop
+    
+  end:
+  
