@@ -2,62 +2,51 @@
 
 .section .text
 _start:
-#your code here
-    movq (head), %rsi # s = head
-    xor %r9, %r9 # b_s = NULL
+#your code here  
+ #initialize
+   movq head, %rax #src pointer
+   movq $head, %rbx
+   movq src, %rsi # tmp = src
+   
+  FindSrc:
+    cmpq $0, %rax
+    je end #if rax==NULL end
+    cmpq %rsi, (%rax) #if *rax==src
+    je FindDest
+    movq %rax, %rbx #ptr2 = src ptr
+    movq 8(%rax), %rax #ptr = ptr->next
+    jmp FindSrc
     
-    xor %rdi, %rdi # d = NULL
-    xor %r10, %r10 # b_d = NULL
-
-loop_s:
-    test %rsi, %rsi
+   FindDest:
+    cmpq $0, 8(%rax)
+    je end #if we foud src but it is the last node goto end
+    movq %rax, %rcx #ptr3 = ptr
+    movq 8(%rcx), %rdx #dest pointer = src pointer->next
+    movq dst, %rsi # tmp = dst
+   FindLoop:
+    cmpq $0, %rdx #if rdx==NULL end
     je end
+    cmpq %rsi, (%rdx)
+    je Switch #if *rdx==dest
+    movq %rdx, %rcx # ptr3 = dst ptr
+    movq 8(%rdx), %rdx #dest ptr = dest ptr->next
+    jmp FindLoop
     
-    movq (%rsi), %rax
-    cmpq %rax, (src)
-    je search_d
+   Switch:
+    cmpq $head, %rbx #if we need to replace the first node       
+    je FirstNodeSwitch
+    movq %rdx, 8(%rbx)#else it is a regular node
     
-    movq %rsi, %r9
-    movq 8(%rsi), %rsi
-    jmp loop_s
+   Continue:
+    movq %rax, 8(%rcx)
+    movq 8(%rax), %rsi # tmp = src ptr->next
+    movq 8(%rdx), %rbx # tmp2 = dst ptr->next
+    movq %rsi, 8(%rdx)
+    movq %rbx, 8(%rax)
+    jmp end
     
-search_d:
-    movq %rsi, %r10
-    movq 8(%rsi), %rdi
-loop_d:
-    test %rdi, %rdi
-    je end
+   FirstNodeSwitch:
+    movq %rdx, head
+    jmp Continue
     
-    movq (%rdi), %rax
-    cmpq %rax, (dst)
-    je swap    
-    
-    movq %rdi, %r10
-    movq 8(%rdi), %rdi
-    jmp loop_d 
-    
-swap:
-    movq 8(%rsi), %r11 # prev_s_next = s->next
-    movq 8(%rdi), %rax
-    movq %rax, 8(%rsi) # s->next = d->next
-    
-    test %r9, %r9 # if (b_s == NULL)
-    je head_d
-    movq %rdi, 8(%r9) # b_s->next = d
-    jmp endif
-head_d:
-    movq %rdi, (head) # head = d
-endif:
-    
-    cmpq %r11, %rdi # if (prev_s_next == d)
-    je swap_sd
-    movq %r11, 8(%rdi) # d->next = prev_s_next
-    jmp endif2
-swap_sd:
-    movq %rsi, 8(%rdi) # d->next = s
-endif2:
-    
-    cmpq %r10, %rsi # if (b_d != s)
-    je end
-    movq %rsi, 8(%r10)
-end:
+  end:
