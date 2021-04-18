@@ -1,32 +1,37 @@
-.global main
+#.global _start
+.global main #need to delete
 
-.section .data
-arr: .int 1,2,3,4,5,6,0,9,10
+.section .data #have to delete this part
+arr: .int 1,2,3,4,0,5,6
 avg: .zero 4
 
-.section .text    
-ex3:
-    movq $arr, %rbx
-    movl $0, %ecx
-    xor %rax, %rax
-loop:
-    movl 0(%rbx,%rcx,4), %edx
-    test %edx, %edx
-    je comp_avg
-    
-    addl %edx, %eax
-    inc %ecx
-    jmp loop
 
-comp_avg:
-    test %ecx, %ecx
-    je end
-    xor %rdx, %rdx
-    div %ecx
-end:
-    movl %eax, (avg)
-    ret
+
+.section .text
+#_start:
 main:
-    movq %rsp, %rbp #for correct debugging
-    call ex3
-    ret
+    movq %rsp, %rbp #for correct debugging #need to deleate
+#your code here
+    movl $0, avg
+    cmpl $0, arr
+    je end #if arr[0] = 0  then avg = 0
+
+    #initialize
+    xorl %esi, %esi #counter
+    xorl %eax, %eax #sum
+    
+   loop:
+    cmpl $0, arr(,%esi,4)
+    je divPart
+    add arr(,%esi,4), %eax
+    incl %esi
+    jmp loop
+    
+   divPart:
+    xorl %edx, %edx
+    div %esi # %eax = %eax/%esi <==> sum = sum/counter
+    movl %eax, avg
+    
+  end:
+    ret #need to delete
+    
