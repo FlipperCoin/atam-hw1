@@ -3,12 +3,14 @@
 .section .text
 _start:
 #your code here
+#your code here
+    movl num, %esi
     xorq %rax,%rax
-    cmpl $0, num #if num<=0 do nothing
+    cmpl $0, %esi #if num<=0 do nothing
     jle end
-    movsxl num ,%rbx
+    movsxl %esi ,%rbx
     addq $source, %rbx 
-    movsxl num ,%rdx
+    movsxl %esi ,%rdx
     addq $destination, %rdx
       loop:
        movb -1(%rbx), %al 
@@ -16,8 +18,10 @@ _start:
        
        decq %rbx #updates the values
        decq %rdx
-       decl num
+       decl %esi
        je end #if num=0 we finished
        jmp loop #else continue
        
-    end:
+    
+    
+  end:
