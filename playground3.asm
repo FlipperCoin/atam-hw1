@@ -1,7 +1,7 @@
 .global main
 
 .section .data
-arr: .int 1,2,3,4,5,6,0,9,10
+arr: .int 0,2,3,4,5,6,0,9,10
 avg: .zero 4
 
 .section .text    

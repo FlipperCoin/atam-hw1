@@ -15,6 +15,7 @@ _start:
     je end
     
     movl $1, (len)
+    movq $1, %r10
     decl %edi
     
 loop:

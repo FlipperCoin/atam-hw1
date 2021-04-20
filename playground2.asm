@@ -2,8 +2,8 @@
 
 .section .data
 source: .int 6,12,9,8
-destination: .int 1,2,3,4 # expected: .int 6,12,3,4
-num: .int 8
+destination: .int 1,2,3,4,5 # expected: .int 6,12,3,4
+num: .int 20
 
 .section .text    
 ex2:

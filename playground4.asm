@@ -1,7 +1,11 @@
 .global main
 
 .section .data
-arr: .int 6,4,1,9,7,6,3
+#arr: .int 6,4,1,9,7,6,3
+#n: .int 7
+#begin: .int 0
+#len: .int 0
+arr: .int 6,4,1,9,10,6,3
 n: .int 7
 begin: .int 0
 len: .int 0
@@ -20,6 +24,7 @@ ex4:
     je end
     
     movl $1, (len)
+    movq $1, %r10
     decl %edi
     
 loop:
